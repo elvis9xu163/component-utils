@@ -1,4 +1,4 @@
-package com.xjd.utils.biz.spring.http.converter;
+package com.xjd.utils.component.spring.http.converter;
 
 import javax.xml.transform.Source;
 

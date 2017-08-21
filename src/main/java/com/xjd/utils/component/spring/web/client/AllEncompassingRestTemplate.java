@@ -1,4 +1,4 @@
-package com.xjd.utils.biz.spring.web.client;
+package com.xjd.utils.component.spring.web.client;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.xjd.utils.biz.spring.http.converter.MapFormHttpMessageConverter;
-import com.xjd.utils.biz.spring.http.converter.Utf8AllEncompassingFormHttpMessageConverter;
+import com.xjd.utils.component.spring.http.converter.MapFormHttpMessageConverter;
+import com.xjd.utils.component.spring.http.converter.Utf8AllEncompassingFormHttpMessageConverter;
 
 /**
  * AllEncompassingRestTemplate与原RestTemplate的区别在于:

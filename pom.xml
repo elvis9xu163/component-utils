@@ -4,8 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.xjd.utils.biz</groupId>
-  <artifactId>biz-utils</artifactId>
+  <groupId>com.xjd.utils.component</groupId>
+  <artifactId>component-utils</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 

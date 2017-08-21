@@ -1,4 +1,4 @@
-package com.xjd.utils.biz.spring.core.converter;
+package com.xjd.utils.component.spring.core.converter;
 
 import org.springframework.core.convert.converter.Converter;
 

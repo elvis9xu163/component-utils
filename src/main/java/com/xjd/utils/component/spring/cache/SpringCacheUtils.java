@@ -1,4 +1,4 @@
-package com.xjd.utils.biz.spring.cache;
+package com.xjd.utils.component.spring.cache;
 
 import java.util.*;
 

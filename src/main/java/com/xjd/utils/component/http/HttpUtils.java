@@ -1,4 +1,4 @@
-package com.xjd.utils.biz.http;
+package com.xjd.utils.component.http;
 
 import javax.servlet.http.HttpServletRequest;
 
