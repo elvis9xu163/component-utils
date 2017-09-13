@@ -16,6 +16,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.xjd.utils.basic</groupId>
+      <artifactId>basic-utils</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>4.3.10.RELEASE</version>
@@ -35,6 +41,19 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.17-beta1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>3.17-beta1</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>servlet-api</artifactId>
       <version>6.0.53</version>
@@ -46,12 +65,6 @@
       <artifactId>slf4j-api</artifactId>
       <version>1.7.25</version>
       <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>com.xjd.utils.basic</groupId>
-      <artifactId>basic-utils</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
