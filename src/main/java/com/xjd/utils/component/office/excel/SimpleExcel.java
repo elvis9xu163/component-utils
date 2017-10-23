@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 
+import com.xjd.utils.basic.StringUtils;
+
 /**
  * @author elvis.xu
  * @since 2017-09-12 17:33
@@ -20,6 +22,7 @@ public class SimpleExcel {
 	protected HSSFRow row;
 
 	protected List<String> headerNames;
+	protected List<String> headerTitles;
 	protected HSSFRow headerRow;
 
 	public SimpleExcel() {
@@ -46,6 +49,7 @@ public class SimpleExcel {
 		sheet = name == null ? workbook.createSheet() : workbook.createSheet(name);
 		row = null;
 		headerNames = new ArrayList<>();
+		headerTitles = new ArrayList<>();
 		headerRow = null;
 		if (showHeader) {
 			headerRow = sheet.createRow(0);
@@ -53,17 +57,32 @@ public class SimpleExcel {
 		return this;
 	}
 
-	public SimpleExcel addHeaders(String... headers) {
-		if (headers != null && headers.length > 0) {
-			for (String header : headers) {
-				if (headerNames.indexOf(header) > -1) {
-					continue;
-				}
+	public SimpleExcel addHeaders(String... names) {
+		if (names != null && names.length > 0) {
+			for (String name : names) {
+				name = StringUtils.trimToEmpty(name);
+				addHeader(name, name);
+			}
+		}
+		return this;
+	}
 
-				headerNames.add(header);
+	public SimpleExcel addHeader(String name, String title) {
+		name = StringUtils.trimToEmpty(name);
+		title = StringUtils.trimToEmpty(title);
+		int index = headerNames.indexOf(name);
+		if (index > -1) {
+			if (!title.equals(headerTitles.get(index))) {
+				headerTitles.set(index, title);
 				if (headerRow != null) {
-					headerRow.createCell(headerNames.size() - 1).setCellValue(header);
+					headerRow.getCell(index).setCellValue(title);
 				}
+			}
+		} else {
+			headerNames.add(name);
+			headerTitles.add(title);
+			if (headerRow != null) {
+				headerRow.createCell(headerNames.size() - 1).setCellValue(title);
 			}
 		}
 		return this;
@@ -79,8 +98,8 @@ public class SimpleExcel {
 		return this;
 	}
 
-	public SimpleExcel setData(String header, Object data) {
-		Cell cell = getCell(header);
+	public SimpleExcel setData(String headerName, Object data) {
+		Cell cell = getCell(headerName);
 
 		if (data == null) {
 			cell.setCellValue("");
@@ -108,8 +127,8 @@ public class SimpleExcel {
 		return this;
 	}
 
-	public SimpleExcel setStyle(String header, CellStyle cellStyle) {
-		Cell cell = getCell(header);
+	public SimpleExcel setStyle(String headerName, CellStyle cellStyle) {
+		Cell cell = getCell(headerName);
 		cell.setCellStyle(cellStyle);
 		return this;
 	}
@@ -118,8 +137,8 @@ public class SimpleExcel {
 	 * set the data format (must be a valid format). Built in formats are defined at {@link BuiltinFormats}.
 	 * @see DataFormat
 	 */
-	public SimpleExcel setFormat(String header, int format) {
-		Cell cell = getCell(header);
+	public SimpleExcel setFormat(String headerName, int format) {
+		Cell cell = getCell(headerName);
 		HSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.cloneStyleFrom(cell.getCellStyle());
 		cellStyle.setDataFormat((short)format);
@@ -127,11 +146,11 @@ public class SimpleExcel {
 		return this;
 	}
 
-	protected Cell getCell(String header) {
-		int index = headerNames.indexOf(header);
+	protected Cell getCell(String headerName) {
+		int index = headerNames.indexOf(headerName);
 		if (index == -1) {
-			addHeaders(header);
-			index = headerNames.indexOf(header);
+			addHeaders(headerName);
+			index = headerNames.indexOf(headerName);
 		}
 
 		int lastCellNum = row.getLastCellNum();
@@ -145,11 +164,11 @@ public class SimpleExcel {
 		return cell;
 	}
 
-	public SimpleExcel setWidth(String header, int width) {
-		int index = headerNames.indexOf(header);
+	public SimpleExcel setWidth(String headerName, int width) {
+		int index = headerNames.indexOf(headerName);
 		if (index == -1) {
-			addHeaders(header);
-			index = headerNames.indexOf(header);
+			addHeaders(headerName);
+			index = headerNames.indexOf(headerName);
 		}
 		sheet.setColumnWidth(index, width);
 		return this;

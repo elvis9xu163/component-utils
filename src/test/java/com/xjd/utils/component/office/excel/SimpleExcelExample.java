@@ -26,6 +26,7 @@ public class SimpleExcelExample {
 				.setData("B", null)
 				.newRow()
 				.setData("D", 100)
+				.addHeader("A", "AAAAA")
 				.setData("A", new Date())
 				.setFormat("A", 22)
 				.setData("C", "哈哈")
