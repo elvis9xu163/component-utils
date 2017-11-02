@@ -7,6 +7,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.xjd.utils.component.retry.RetryException;
 import com.xjd.utils.component.retry.RetryFuture;
+import com.xjd.utils.component.retry.util.DelegateFuture;
 
 /**
  * @author elvis.xu

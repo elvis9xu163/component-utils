@@ -3,6 +3,10 @@ package com.xjd.utils.component.retry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import com.xjd.utils.basic.LockUtils;
 
 /**
  * @author elvis.xu
@@ -16,13 +20,15 @@ public interface AsyncRetry<T> extends Retry<T, RetryFuture<T>> {
 		RetryCallable<T> retryCallable = new RetryCallable<T>(state, task, judge, executor);
 
 		while (true) {
-			state.t = null;
-			state.currentExecuteTimes++;
-			try {
-				state.currentFuture = executor.execute(retryCallable, state.currentExecuteTimes, null, null);
-				break;
-			} catch (Exception e) {
-				state.t = e;
+			try (LockUtils.LockResource lr = LockUtils.lock(state.lock)) {
+				state.t = null;
+				state.currentExecuteTimes++;
+				try {
+					state.currentFuture = executor.execute(retryCallable, state.currentExecuteTimes, null, null);
+					break;
+				} catch (Exception e) {
+					state.t = e;
+				}
 			}
 			try {
 				if (!judge.judge(task, state.currentExecuteTimes, null, state.t)) {
@@ -42,10 +48,11 @@ public interface AsyncRetry<T> extends Retry<T, RetryFuture<T>> {
 
 
 	public static class RetryState<T> {
+		protected Lock lock = new ReentrantLock();
+		protected CountDownLatch finishLatch = new CountDownLatch(1);
 		protected volatile int currentExecuteTimes = 0;
 		protected volatile Exception t;
 		protected volatile RetryFuture<T> currentFuture = null;
-		protected CountDownLatch finishLatch = new CountDownLatch(1);
 	}
 
 	public static class MutRetryFuture<T> implements RetryFuture<T> {
@@ -146,13 +153,15 @@ public interface AsyncRetry<T> extends Retry<T, RetryFuture<T>> {
 			while (true) {
 				try {
 					if (judge.judge(task, state.currentExecuteTimes, rt, t)) {
-						state.currentExecuteTimes++;
-						try {
-							state.currentFuture = executor.execute(this, state.currentExecuteTimes, rt, t);
-							break;
-						} catch (Exception e) {
-							t = e;
-							rt = null;
+						try (LockUtils.LockResource lr = LockUtils.lock(state.lock)) {
+							state.currentExecuteTimes++;
+							try {
+								state.currentFuture = executor.execute(this, state.currentExecuteTimes, rt, t);
+								break;
+							} catch (Exception e) {
+								t = e;
+								rt = null;
+							}
 						}
 					} else {
 						state.finishLatch.countDown();

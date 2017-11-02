@@ -1,4 +1,4 @@
-package com.xjd.utils.component.retry.impl;
+package com.xjd.utils.component.retry.util;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

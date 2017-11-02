@@ -1,44 +1,41 @@
-package com.xjd.utils.component.retry.executor;
+package com.xjd.utils.component.retry.util;
 
 import java.util.concurrent.*;
 
-import com.xjd.utils.component.retry.impl.DelegateFuture;
-
 /**
  * @author elvis.xu
- * @since 2017-11-01 11:22
+ * @since 2017-11-02 15:37
  */
-public abstract class AbstractRunnableFutureRetryExecutor<T> extends AbstractFutureRetryExecutor<T> {
+public class CallableAdapter<T> implements Runnable {
+	Callable<T> callable;
+	RunnableFuture<T> future;
 
-	@Override
-	protected Future<T> doExecute(int executeTimes, Callable<T> task, T lastResult, Throwable lastThrowable) {
-		CallRunnableFuture<T> future = new CallRunnableFuture<>();
-		Future<T> f = doExecute(executeTimes, () -> {
-
-			try {
-				future.result = task.call();
-			} catch (Exception e) {
-				future.t = e;
-			}
-
-		}, lastResult, lastThrowable);
-		future.setFuture(f);
-		return future;
+	public CallableAdapter(Callable<T> callable, RunnableFuture<T> future) {
+		this.callable = callable;
+		this.future = future;
 	}
 
-	protected abstract Future<T> doExecute(int executeTimes, Runnable task, T lastResult, Throwable lastThrowable);
+	@Override
+	public void run() {
+		try {
+			future.result = callable.call();
+		} catch (Exception e) {
+			future.t = e;
+		}
+	}
 
-	public static class CallRunnableFuture<T> extends DelegateFuture<T> {
+	public static class RunnableFuture<T> extends DelegateFuture<T> {
 
 		protected T result;
-		protected Throwable t;
+		protected Exception t;
 
-		public CallRunnableFuture() {
+		public RunnableFuture() {
 			super(null);
 		}
 
-		protected void setFuture(Future future) {
+		public RunnableFuture setFuture(Future future) {
 			this.future = future;
+			return this;
 		}
 
 		@Override
