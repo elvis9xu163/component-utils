@@ -156,4 +156,27 @@ public class RetrysTest {
 			System.out.println("times: " + future.getExecuteTimes());
 		}
 	}
+
+	@Test
+	public void cancelRetry() throws InterruptedException {
+		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
+		{
+			RetryFuture<String> future = Retrys.retryScheduledAtCustomDelay(() -> {
+						System.out.println("执行完成.: " + System.currentTimeMillis());
+						throw new Exception("我是异常");
+					},
+					4,
+					scheduledExecutorService,
+					3000, 3000, 3000
+			);
+			Thread.sleep(2000L);
+			System.out.println(future.cancel(true));
+			try {
+				System.out.println(future.get());
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			System.out.println("times: " + future.getExecuteTimes());
+		}
+	}
 }
