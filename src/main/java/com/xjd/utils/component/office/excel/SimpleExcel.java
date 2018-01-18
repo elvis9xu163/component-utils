@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.xjd.utils.basic.StringUtils;
 
@@ -17,19 +19,35 @@ import com.xjd.utils.basic.StringUtils;
  * @since 2017-09-12 17:33
  */
 public class SimpleExcel {
-	protected HSSFWorkbook workbook;
-	protected HSSFSheet sheet;
-	protected HSSFRow row;
+	public static final int HSSF_EXCEL_2003 = 1;
+	public static final int XSSF_EXCEL_2007 = 2;
+	public static final int SXSSF_EXCEL_2007 = 3;
+
+	protected Workbook workbook;
+	protected Sheet sheet;
+	protected Row row;
 
 	protected List<String> headerNames;
 	protected List<String> headerTitles;
-	protected HSSFRow headerRow;
+	protected Row headerRow;
 
 	public SimpleExcel() {
-		workbook = new HSSFWorkbook();
+		this(XSSF_EXCEL_2007);
 	}
 
-	public HSSFWorkbook getWorkbook() {
+	public SimpleExcel(int mode) {
+		if (HSSF_EXCEL_2003 == mode) {
+			workbook = new HSSFWorkbook();
+		} else if (XSSF_EXCEL_2007 == mode) {
+			workbook = new XSSFWorkbook();
+		} else if (SXSSF_EXCEL_2007 == mode) {
+			workbook = new SXSSFWorkbook();
+		} else {
+			throw new RuntimeException("unresolved mode: " + mode);
+		}
+	}
+
+	public Workbook getWorkbook() {
 		return workbook;
 	}
 
@@ -139,7 +157,7 @@ public class SimpleExcel {
 	 */
 	public SimpleExcel setFormat(String headerName, int format) {
 		Cell cell = getCell(headerName);
-		HSSFCellStyle cellStyle = workbook.createCellStyle();
+		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.cloneStyleFrom(cell.getCellStyle());
 		cellStyle.setDataFormat((short)format);
 		cell.setCellStyle(cellStyle);
@@ -160,7 +178,7 @@ public class SimpleExcel {
 			row.createCell(i);
 		}
 
-		HSSFCell cell = row.getCell(index);
+		Cell cell = row.getCell(index);
 		return cell;
 	}
 
