@@ -12,17 +12,17 @@ public interface RetryJudge<T> {
 	boolean judge(Callable<T> task, int executedTimes, T result, Throwable throwable);
 
 	default RetryJudge<T> and(RetryJudge<T> judge) {
-		AssertUtils.assertArgumentNonNull(judge);
+		AssertUtils.assertNonNull(judge);
 		return (task, executedTimes, result, throwable) -> judge(task, executedTimes, result, throwable) && judge.judge(task, executedTimes, result, throwable);
 	}
 
 	default RetryJudge<T> or(RetryJudge<T> judge) {
-		AssertUtils.assertArgumentNonNull(judge);
+		AssertUtils.assertNonNull(judge);
 		return (task, executedTimes, result, throwable) -> judge(task, executedTimes, result, throwable) || judge.judge(task, executedTimes, result, throwable);
 	}
 
 	public static <T> RetryJudge<T> not(RetryJudge<T> judge) {
-		AssertUtils.assertArgumentNonNull(judge);
+		AssertUtils.assertNonNull(judge);
 		return (task, executedTimes, result, throwable) -> !judge.judge(task, executedTimes, result, throwable);
 	}
 }

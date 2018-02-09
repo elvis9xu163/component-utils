@@ -21,7 +21,7 @@ public class FixedDelayTrigger<T> implements RetryScheduledExecutor.Trigger<T> {
 	}
 
 	public FixedDelayTrigger(long delay, TimeUnit timeUnit) {
-		AssertUtils.assertArgumentGreaterEqualThan(delay, 1, "delay must greater than 1");
+		AssertUtils.assertArgumentGreaterEqualThan(delay, 1L, "delay must greater than 1");
 		AssertUtils.assertArgumentNonNull(timeUnit, "timeUnit cannot be null");
 		this.delay = delay;
 		this.timeUnit = timeUnit;
