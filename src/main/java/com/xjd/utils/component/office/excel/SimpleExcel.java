@@ -78,7 +78,7 @@ public class SimpleExcel {
 	public SimpleExcel addHeaders(String... names) {
 		if (names != null && names.length > 0) {
 			for (String name : names) {
-				name = StringUtils.trimToEmpty(name);
+				name = standardizeHeaderName(name);
 				addHeader(name, name);
 			}
 		}
@@ -86,8 +86,8 @@ public class SimpleExcel {
 	}
 
 	public SimpleExcel addHeader(String name, String title) {
-		name = StringUtils.trimToEmpty(name);
-		title = StringUtils.trimToEmpty(title);
+		name = standardizeHeaderName(name);
+		title = standardizeHeaderName(title);
 		int index = headerNames.indexOf(name);
 		if (index > -1) {
 			if (!title.equals(headerTitles.get(index))) {
@@ -117,6 +117,7 @@ public class SimpleExcel {
 	}
 
 	public SimpleExcel setData(String headerName, Object data) {
+		headerName = standardizeHeaderName(headerName);
 		Cell cell = getCell(headerName);
 
 		if (data == null) {
@@ -146,6 +147,7 @@ public class SimpleExcel {
 	}
 
 	public SimpleExcel setStyle(String headerName, CellStyle cellStyle) {
+		headerName = standardizeHeaderName(headerName);
 		Cell cell = getCell(headerName);
 		cell.setCellStyle(cellStyle);
 		return this;
@@ -156,6 +158,7 @@ public class SimpleExcel {
 	 * @see DataFormat
 	 */
 	public SimpleExcel setFormat(String headerName, int format) {
+		headerName = standardizeHeaderName(headerName);
 		Cell cell = getCell(headerName);
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.cloneStyleFrom(cell.getCellStyle());
@@ -165,6 +168,7 @@ public class SimpleExcel {
 	}
 
 	protected Cell getCell(String headerName) {
+		headerName = standardizeHeaderName(headerName);
 		int index = headerNames.indexOf(headerName);
 		if (index == -1) {
 			addHeaders(headerName);
@@ -183,6 +187,7 @@ public class SimpleExcel {
 	}
 
 	public SimpleExcel setWidth(String headerName, int width) {
+		headerName = standardizeHeaderName(headerName);
 		int index = headerNames.indexOf(headerName);
 		if (index == -1) {
 			addHeaders(headerName);
@@ -208,5 +213,9 @@ public class SimpleExcel {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	protected String standardizeHeaderName(String header) {
+		return StringUtils.trimToEmpty(header);
 	}
 }
